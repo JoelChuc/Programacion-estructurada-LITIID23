@@ -1,0 +1,139 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace RegistroPersonas
+{
+    // Definimos una clase simple para almacenar los datos
+    public class Persona
+    {
+        public string Nombre { get; set; }
+        public int Edad { get; set; }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // --- PASO 1: Solicitar cantidad de personas ---
+            int cantidadPersonas = 0;
+            bool cantidadValida = false;
+
+            while (!cantidadValida)
+            {
+                Console.Write("Ingrese la cantidad de personas que desea registrar: ");
+                string entrada = Console.ReadLine();
+
+                // Validamos que sea número entero y mayor o igual a 1
+                if (int.TryParse(entrada, out cantidadPersonas) && cantidadPersonas >= 1)
+                {
+                    cantidadValida = true;
+                }
+                else
+                {
+                    Console.WriteLine(">> Error: Debe ingresar un número entero válido mayor a 0.");
+                }
+            }
+
+            // Lista principal para almacenar a todos
+            List<Persona> listaGeneral = new List<Persona>();
+
+            Console.WriteLine("\n--- Inicio del Registro ---");
+
+            // --- PASO 2 y 3: Ingreso de datos ---
+            for (int i = 0; i < cantidadPersonas; i++)
+            {
+                Console.WriteLine($"\nPersona #{i + 1}:");
+                
+                // Solicitar Nombre
+                Console.Write("Nombre: ");
+                string nombre = Console.ReadLine();
+
+                // Solicitar Edad con validación
+                int edad = 0;
+                bool edadValida = false;
+
+                while (!edadValida)
+                {
+                    Console.Write("Edad: ");
+                    string entradaEdad = Console.ReadLine();
+
+                    // PASO 4: Validación de edad (números, no letras)
+                    // Asumimos que la edad debe ser un número positivo
+                    if (int.TryParse(entradaEdad, out edad) && edad >= 0)
+                    {
+                        edadValida = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine(">> Error: La edad debe ser un número válido (sin letras ni símbolos). Intente de nuevo.");
+                    }
+                }
+
+                // Agregamos la persona a la lista general
+                listaGeneral.Add(new Persona { Nombre = nombre, Edad = edad });
+            }
+
+            Console.WriteLine("\n=================================");
+            Console.WriteLine("       RESULTADOS DEL SISTEMA      ");
+            Console.WriteLine("=================================");
+
+            // --- PASO 5: Caso Especial (1 sola persona) ---
+            if (listaGeneral.Count == 1)
+            {
+                Persona p = listaGeneral[0];
+                string estado = p.Edad >= 18 ? "Mayor de edad" : "Menor de edad";
+                Console.WriteLine($"\nNombre: {p.Nombre}");
+                Console.WriteLine($"Estado: {estado} ({p.Edad} años)");
+            }
+            // --- PASO 6: Caso General (2 o más personas) ---
+            else
+            {
+                // 6.1 Mostrar lista general
+                Console.WriteLine("\n--- Lista General de Registrados ---");
+                foreach (var p in listaGeneral)
+                {
+                    Console.WriteLine($"- {p.Nombre}, {p.Edad} años");
+                }
+
+                // 6.2 Clasificar en listas separadas
+                List<Persona> mayores = new List<Persona>();
+                List<Persona> menores = new List<Persona>();
+
+                foreach (var p in listaGeneral)
+                {
+                    if (p.Edad >= 18)
+                        mayores.Add(p);
+                    else
+                        menores.Add(p);
+                }
+
+                // 6.3 y 6.4 Mostrar listados separados (solo si tienen datos)
+                
+                // Mostrar Mayores
+                if (mayores.Count > 0)
+                {
+                    Console.WriteLine("\n--- Personas Mayores de Edad ---");
+                    foreach (var p in mayores)
+                    {
+                        Console.WriteLine($"[MAYOR] {p.Nombre} ({p.Edad} años)");
+                    }
+                }
+
+                // Mostrar Menores
+                if (menores.Count > 0)
+                {
+                    Console.WriteLine("\n--- Personas Menores de Edad ---");
+                    foreach (var p in menores)
+                    {
+                        Console.WriteLine($"[MENOR] {p.Nombre} ({p.Edad} años)");
+                    }
+                }
+            }
+
+            // Pausa final para que la consola no se cierre inmediatamente
+            Console.WriteLine("\nPresione cualquier tecla para salir...");
+            Console.ReadKey();
+        }
+    }
+}
