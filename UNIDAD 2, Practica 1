@@ -55,13 +55,13 @@ namespace RegistroPersonas
 
             if (edadConvertida == true)
             {
-                if (edadTemp >= 0)
+                if (edadTemp > 0)
                 {
                     edadCorrecta = true;
                 }
                 else
                 {
-                    Console.WriteLine("La edad no puede ser un numero negativo.");
+                    Console.WriteLine("La edad no puede ser un numero negativo o cero.");
                 }
             }
             else
