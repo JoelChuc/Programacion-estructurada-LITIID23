@@ -3,141 +3,128 @@ using System.Collections.Generic;
 
 namespace RegistroPersonas
 {
-   static void Main(string[] args)
-{
-    List<string> listaNombres = new List<string>();
-    List<int> listaEdades = new List<int>();
-
-    int cantidad = 0;
-    bool cantidadCorrecta = false;
-
-    while (cantidadCorrecta == false)
+    class Program 
     {
-        Console.Write("Dime cuantas personas vas a ingresar: ");
-        string entradaTexto = Console.ReadLine();
-
-        bool Convertir = int.TryParse(entradaTexto, out cantidad);
-
-        if (Convertir == true)
+        // 1. PRIMERA FUNCIÓN: Obtener la cantidad de personas (Retorna un 'int')
+        static int ObtenerCantidadPersonas()
         {
-            if (cantidad >= 1)
+            int cantidad = 0;
+            bool cantidadCorrecta = false;
+
+            while (!cantidadCorrecta)
             {
-                cantidadCorrecta = true;
+                Console.Write("Dime cuantas personas vas a ingresar: ");
+                string entradaTexto = Console.ReadLine();
+                bool Convertir = int.TryParse(entradaTexto, out cantidad);
+
+                if (Convertir && cantidad >= 1)
+                {
+                    cantidadCorrecta = true;
+                }
+                else
+                {
+                    Console.WriteLine("Error: Tienes que ingresar 1 o más personas (usa números, no letras).");
+                }
             }
-            else
-            {
-                Console.WriteLine("Error: Tienes que ingresar 1 o mas personas.");
-            }
+            return cantidad; // Tipo de retorno 
         }
-        else
+
+        // 2. SEGUNDA FUNCIÓN: Obtener y validar la edad (Retorna un 'int', recibe un parámetro 'string')
+        static int ObtenerEdadValida(string nombrePersona) // 'nombrePersona' es el parámetro 
         {
-            Console.WriteLine("Error: Por favor escribe un numero, no letras.");
-        }
-    }
-    for (int i = 0; i < cantidad; i++)
-    {
-        Console.WriteLine("");
-        Console.WriteLine("Persona numero " + (i + 1) + ":");
+            int edadTemp = 0;
+            bool edadCorrecta = false;
 
-        Console.Write("Escribe el nombre: ");
-        string nombreTemp = Console.ReadLine();
-        listaNombres.Add(nombreTemp);
-
-        int edadTemp = 0;
-        bool edadCorrecta = false;
-
-        while (edadCorrecta == false)
-        {
-            Console.Write("Escribe la edad de " + nombreTemp + ": ");
-            string entradaEdad = Console.ReadLine();
-
-            bool edadConvertida = int.TryParse(entradaEdad, out edadTemp);
-
-            if (edadConvertida == true)
+            while (!edadCorrecta)
             {
-                if (edadTemp > 0)
+                Console.Write("Escribe la edad de " + nombrePersona + ": ");
+                string entradaEdad = Console.ReadLine();
+                bool edadConvertida = int.TryParse(entradaEdad, out edadTemp);
+
+                if (edadConvertida && edadTemp > 0)
                 {
                     edadCorrecta = true;
                 }
                 else
                 {
-                    Console.WriteLine("La edad no puede ser un numero negativo o cero.");
+                    Console.WriteLine("Error: La edad debe ser un número mayor a cero.");
+                }
+            }
+            return edadTemp; // Tipo de retorno 
+        }
+
+        // 3. PROCEDIMIENTO: Muestra los resultados (Uso de 'void', no retorna nada) 
+        static void MostrarResultados(List<string> nombres, List<int> edades, int total)
+        {
+            Console.WriteLine("\n--------------------------------");
+
+            if (total == 1)
+            {
+                Console.WriteLine("Nombre: " + nombres[0]);
+                if (edades[0] >= 18)
+                {
+                    Console.WriteLine("Es Mayor de edad (Tiene " + edades[0] + " años).");
+                }
+                else
+                {
+                    Console.WriteLine("Es Menor de edad (Tiene " + edades[0] + " años).");
                 }
             }
             else
             {
-                Console.WriteLine("Error: La edad solo debe tener numeros.");
+                Console.WriteLine("--- LISTA GENERAL ---");
+                for (int i = 0; i < nombres.Count; i++)
+                {
+                    Console.WriteLine(nombres[i] + " tiene " + edades[i] + " años.");
+                }
+
+                // Refactorización: En lugar de crear 4 listas nuevas, iteramos sobre las existentes
+                Console.WriteLine("\n--- MAYORES DE EDAD ---");
+                for (int i = 0; i < nombres.Count; i++)
+                {
+                    if (edades[i] >= 18)
+                    {
+                        Console.WriteLine(nombres[i] + " (" + edades[i] + " años)");
+                    }
+                }
+
+                Console.WriteLine("\n--- MENORES DE EDAD ---");
+                for (int i = 0; i < nombres.Count; i++)
+                {
+                    if (edades[i] < 18)
+                    {
+                        Console.WriteLine(nombres[i] + " (" + edades[i] + " años)");
+                    }
+                }
             }
         }
 
-        listaEdades.Add(edadTemp);
-    }
-
-    Console.WriteLine("");
-    Console.WriteLine("--------------------------------");
-
-    if (cantidad == 1)
-    {
-        Console.WriteLine("Nombre: " + listaNombres[0]);
-
-        if (listaEdades[0] >= 18)
+        // PROGRAMA PRINCIPAL
+        static void Main(string[] args)
         {
-            Console.WriteLine("Es Mayor de edad (Tiene " + listaEdades[0] + " años).");
-        }
-        else
-        {
-            Console.WriteLine("Es Menor de edad (Tiene " + listaEdades[0] + " años).");
-        }
-    }
-    else
-    {
-        Console.WriteLine("--- LISTA GENERAL ---");
-        for (int i = 0; i < listaNombres.Count; i++)
-        {
-            Console.WriteLine(listaNombres[i] + " tiene " + listaEdades[i] + " años.");
-        }
-        List<string> nombresMayores = new List<string>();
-        List<int> edadesMayores = new List<int>();
+            List<string> listaNombres = new List<string>();
+            List<int> listaEdades = new List<int>();
 
-        List<string> nombresMenores = new List<string>();
-        List<int> edadesMenores = new List<int>();
+            // Llamada a la primera función
+            int cantidad = ObtenerCantidadPersonas();
 
-        for (int i = 0; i < listaNombres.Count; i++)
-        {
-            if (listaEdades[i] >= 18)
+            for (int i = 0; i < cantidad; i++)
             {
-                nombresMayores.Add(listaNombres[i]);
-                edadesMayores.Add(listaEdades[i]);
-            }
-            else
-            {
-                nombresMenores.Add(listaNombres[i]);
-                edadesMenores.Add(listaEdades[i]);
-            }
-        }
-        if (nombresMayores.Count > 0)
-        {
-            Console.WriteLine("");
-            Console.WriteLine("--- MAYORES DE EDAD ---");
-            for (int i = 0; i < nombresMayores.Count; i++)
-            {
-                Console.WriteLine(nombresMayores[i] + " (" + edadesMayores[i] + " años)");
-            }
-        }
+                Console.WriteLine("\nPersona numero " + (i + 1) + ":");
+                Console.Write("Escribe el nombre: ");
+                string nombreTemp = Console.ReadLine();
+                listaNombres.Add(nombreTemp);
 
-        if (nombresMenores.Count > 0)
-        {
-            Console.WriteLine("");
-            Console.WriteLine("--- MENORES DE EDAD ---");
-            for (int i = 0; i < nombresMenores.Count; i++)
-            {
-                Console.WriteLine(nombresMenores[i] + " (" + edadesMenores[i] + " años)");
+                // Llamada a la segunda función pasando un argumento 
+                int edadTemp = ObtenerEdadValida(nombreTemp); 
+                listaEdades.Add(edadTemp);
             }
+
+            // Llamada al procedimiento pasando argumentos
+            MostrarResultados(listaNombres, listaEdades, cantidad);
+
+            Console.WriteLine("\nPresiona Enter para salir...");
+            Console.ReadLine();
         }
     }
-
-    Console.WriteLine("");
-    Console.WriteLine("Presiona Enter para salir...");
-    Console.ReadLine();
-}
 }
